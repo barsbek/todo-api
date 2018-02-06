@@ -1,8 +1,7 @@
 class Api::V1::BaseController < ActionController::API
   def request_auth!
     unless current_user
-      response = { message: "User is not authorized" }
-      render json: response, status: :unauthorized
+      redirect_to "/authenticate", status: :unauthorized
     end
   end
 
