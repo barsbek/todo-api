@@ -1,6 +1,6 @@
 class Api::V1::ListsController < Api::V1::BaseController
   before_action :request_auth!
-  before_action :set_list, only: [:show, :destroy]
+  before_action :set_list, only: [:show, :update, :destroy]
 
   rescue_from ActiveRecord::RecordNotFound, with: :not_found
 
@@ -21,9 +21,17 @@ class Api::V1::ListsController < Api::V1::BaseController
     end
   end
 
+  def update
+    if @list.update(list_params)
+      render :show
+    else
+      render json: @list.errors, status: :unprocessable_entity
+    end
+  end
+
   def destroy
     @list.destroy
-    render json: { message: "List was successfully deleted" }
+    render :show
   end
 
   private
