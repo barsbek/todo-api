@@ -1,7 +1,8 @@
 class User < ApplicationRecord
   has_secure_password
 
-  has_many :lists
+  has_many :lists, dependent: :destroy
+  has_many :todos
 
   def encode_token
     JWT.encode(token_payload, User::secret)
@@ -20,7 +21,7 @@ class User < ApplicationRecord
     end
 
     def token_payload
-      exp = 1.hour.from_now.to_i
+      exp = 10.hours.from_now.to_i
       { exp: exp, id: id }
     end
 end
