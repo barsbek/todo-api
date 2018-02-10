@@ -1,4 +1,6 @@
 class Api::V1::BaseController < ActionController::API
+  rescue_from ActiveRecord::RecordNotFound, with: :not_found
+
   def request_auth!
     unless current_user
       redirect_to "/authenticate", status: :unauthorized
@@ -15,5 +17,9 @@ class Api::V1::BaseController < ActionController::API
     def token
       auth = request.headers['Authorization']
       auth.split(' ').last if auth.present?
+    end
+
+    def not_found(e)
+      render json: { message: e.message }, status: :not_found
     end
 end

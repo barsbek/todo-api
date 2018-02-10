@@ -2,8 +2,6 @@ class Api::V1::ListsController < Api::V1::BaseController
   before_action :request_auth!
   before_action :set_list, only: [:show, :update, :destroy]
 
-  rescue_from ActiveRecord::RecordNotFound, with: :not_found
-
   def index
     @lists = @current_user.lists
   end
@@ -40,10 +38,6 @@ class Api::V1::ListsController < Api::V1::BaseController
     end
 
     def set_list
-      @list = List.find(params[:id])
-    end
-
-    def not_found(e)
-      render json: { message: e.message }, status: :not_found
+      @list = current_user.lists.find(params[:id])
     end
 end
